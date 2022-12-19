@@ -52,7 +52,7 @@ const mainPrompt = () => {
 
 // add function for viewEmployees
 const viewEmployees = () => {
-    db.query('SELECT ')
+    db.query('SELECT * FROM employee');
 }
 // add function for addEmployee
 const addEmployee = () => {
@@ -101,10 +101,78 @@ const addEmployee = () => {
     });
 };
 // add function for updateRole
-
+const updateRole = () => {
+    inquirer.prompt ([
+        {
+            type: 'input',
+            name: 'id',
+            message: 'Enter employee id:'
+        },
+        {
+            type: 'input',
+            name: 'newRole',
+            message: 'Enter new employee role'
+        }
+    ]).then(function(res) {
+        let input = '';
+        db.query(input, { id: res.id, title: res.newRole}, function(err, res) {
+            if (err) throw err;
+            mainPrompt();
+        })
+    })
+}
 // add function for viewRoles
+const viewRoles = () => {
+    db.query('SELECT title FROM role', function(err, res) {
+        if (err) throw err;
+        if (res) console.table(res);
+        mainPrompt();
+    });
+};
 // add function for addRole
+const addRole = () => {
+    inquirer.prompt ([
+        {
+            type: 'input',
+            name: 'newRole',
+            message: 'Enter new role:'
+        }
+    ]).then(function(res) {
+        let input = 'INSERT INTO role SET ?';
+        db.query(input, {title: res.newRole}, function(err, res) {
+            if (err) throw err;
+            if (res) console.log('new role added');
+            mainPrompt();
+        })
+    })
+}
 // add function for viewDepartments
+const viewDepartments = () => {
+    db.query('SELECT * FROM department', function(err, res) {
+        if (err) throw err;
+        if (res) console.table(res);
+        mainPrompt();
+    });
+}
 // add function for addDepartment
+const addDepartment = () => {
+    inquirer.prompt ([
+        {
+            type: 'input',
+            name: 'newDepartment',
+            message: 'Enter new department:'
+        }
+    ]).then(function(res) {
+        let input = 'INSERT INTO department SET ?';
+        db.query(input, {name: res.newDepartment}, function(err, res) {
+            if (err) throw err;
+            if (res) console.log('new department added');
+            mainPrompt();
+        });
+    })
+}
 // add function for quit
+const quit = () => {
+    return console.log('Goodbye');
+}
 mainPrompt();
