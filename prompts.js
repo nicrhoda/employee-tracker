@@ -44,7 +44,7 @@ const mainPrompt = () => {
                 addDepartment();
                 break;
             case 'Quit':
-                quit();
+                return console.log('goodbye');
                 break;
         }
     })
@@ -52,7 +52,11 @@ const mainPrompt = () => {
 
 // add function for viewEmployees
 const viewEmployees = () => {
-    db.query('SELECT * FROM employee');
+    db.query('SELECT * FROM employee', function(err, res) {
+        if (err) throw err;
+        if (res) console.table(res);
+        mainPrompt();
+    });
 }
 // add function for addEmployee
 const addEmployee = () => {
@@ -90,14 +94,20 @@ const addEmployee = () => {
         {
             type: 'input',
             name: 'manager',
-            message: 'Enter employee manager:'
+            message: 'Enter employee manager id:'
         }
     ]).then(function(res) {
         let input = 'INSERT INTO employee SET ?';
-        db.query(input, { id: res.id, first_name: res.firstname, last_name: res.lastname, department: res.department, title: res.role, salary: res.salary, manager: res.manager}, function(err, res) {
+        db.query(input, { id: res.id, first_name: res.firstname, last_name: res.lastname, manager_id: res.manager }, function(err, res) {
             if (err) throw err;
-            mainPrompt();
+            if (res) console.log('new member added');
         });
+        let input2 = 'INSERT INTO role SET ?'
+        db.query(input2, { title: res.role, salary: res.salary }, function(err, res) {
+            if (err) throw err;
+            
+        });
+        mainPrompt();
     });
 };
 // add function for updateRole
@@ -171,8 +181,6 @@ const addDepartment = () => {
         });
     })
 }
-// add function for quit
-const quit = () => {
-    return console.log('Goodbye');
-}
+
+// start prompts
 mainPrompt();
