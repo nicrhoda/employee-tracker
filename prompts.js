@@ -1,17 +1,8 @@
 const inquirer = require('inquirer');
-const express = require('express');
 const mysql = require('mysql2');
-
-const db = mysql.createConnection(
-    {
-        host: 'localhost',
-        user: 'root',
-        password: 'NicBen04',
-        database: 'employee_db'
-    },
-    console.log('connected to employee database')
-);
-
+// moved function to connect to mysql to hide password
+const db = require('./mysql'); 
+// main prompts for start page
 const mainPrompt = () => {
     inquirer.prompt ([
         {
@@ -46,11 +37,11 @@ const mainPrompt = () => {
             case 'Quit':
                 return console.log('goodbye');
                 break;
-        }
-    })
-}
+        };
+    });
+};
 
-// add function for viewEmployees
+// function for viewEmployees
 const viewEmployees = () => {
     db.query('SELECT * FROM employee', function(err, res) {
         if (err) throw err;
@@ -58,7 +49,7 @@ const viewEmployees = () => {
         mainPrompt();
     });
 }
-// add function for addEmployee
+// function for addEmployee
 const addEmployee = () => {
     inquirer.prompt ([
         {
@@ -94,23 +85,18 @@ const addEmployee = () => {
         {
             type: 'input',
             name: 'manager',
-            message: 'Enter employee manager id:'
+            message: 'Enter employee manager:'
         }
     ]).then(function(res) {
         let input = 'INSERT INTO employee SET ?';
-        db.query(input, { id: res.id, first_name: res.firstname, last_name: res.lastname, manager_id: res.manager }, function(err, res) {
+        db.query(input, { id: res.id, first_name: res.firstname, last_name: res.lastname, manager_id: res.manager, role_id: res.role }, function(err, res) {
             if (err) throw err;
             if (res) console.log('new member added');
-        });
-        let input2 = 'INSERT INTO role SET ?'
-        db.query(input2, { title: res.role, salary: res.salary }, function(err, res) {
-            if (err) throw err;
-            
         });
         mainPrompt();
     });
 };
-// add function for updateRole
+// function for updateRole
 const updateRole = () => {
     inquirer.prompt ([
         {
@@ -131,7 +117,7 @@ const updateRole = () => {
         })
     })
 }
-// add function for viewRoles
+// function for viewRoles
 const viewRoles = () => {
     db.query('SELECT title FROM role', function(err, res) {
         if (err) throw err;
@@ -139,7 +125,7 @@ const viewRoles = () => {
         mainPrompt();
     });
 };
-// add function for addRole
+// function for addRole
 const addRole = () => {
     inquirer.prompt ([
         {
@@ -156,7 +142,7 @@ const addRole = () => {
         })
     })
 }
-// add function for viewDepartments
+// function for viewDepartments
 const viewDepartments = () => {
     db.query('SELECT * FROM department', function(err, res) {
         if (err) throw err;
@@ -164,7 +150,7 @@ const viewDepartments = () => {
         mainPrompt();
     });
 }
-// add function for addDepartment
+// function for addDepartment
 const addDepartment = () => {
     inquirer.prompt ([
         {

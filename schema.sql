@@ -20,7 +20,7 @@ CREATE TABLE employee (
     id INT AUTO_INCREMENT NOT NULL,
     first_name VARCHAR(30),
     last_name VARCHAR(30),
-    role_id INT,
-    manager_id INT,
+    role_id VARCHAR(30),
+    manager_id VARCHAR(30),
     PRIMARY KEY (id)
 );
